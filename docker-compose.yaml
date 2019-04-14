@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  openldap:
+    image: osixia/openldap
+    container_name: test1-ldap
+    environment:
+      LDAP_ORGANISATION: "example"
+      LDAP_DOMAIN: "example.com"
+      LDAP_ADMIN_PASSWORD: "ldappw"
+
+  admin:
+    image: osixia/phpldapadmin
+    container_name: test1-ldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "ldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "8080:80"
+    links:
+      - "openldap:ldap"
+  php:
+          #image: php:7.2-alpine
+    build: ./php
+    ports:
+      - "10022:22"
+    command: /usr/sbin/sshd -D
